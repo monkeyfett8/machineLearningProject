@@ -115,7 +115,8 @@ print(cbind(methods,accuracy))</code></pre>
 ## [1,] &quot;Tree&quot;  &quot;0.555140186915888&quot;
 ## [2,] &quot;LDA&quot;   &quot;0.696176720475786&quot;
 ## [3,] &quot;QDA&quot;   &quot;0.892438402718777&quot;</code></pre>
-<p>From this the Quadratic Discriminant Analysis (QDA) method shows the highest accuracy at nearly 90%. From this the predicitons of the testing set are made. These are then to be saved to files and uploaded to coursera. From this all 20 data points were correctly predicted.</p>
+<p>From this the Quadratic Discriminant Analysis (QDA) method shows the highest accuracy at nearly 90%. This would show the out of sample error to be about 10.8% from this cross validation set.</p>
+<p>From this the predicitons of the testing set are made with the QDA model. These are then to be saved to files and uploaded to coursera. From this all 20 data points were correctly predicted.</p>
 <pre class="r"><code>predQDA &lt;- as.character(predict(modelQDA, newdata=test2))
 
 pml_write_files = function(x){

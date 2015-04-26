@@ -71,7 +71,9 @@ accuracy <- c(correctTree,correctLDA,correctQDA)
 print(cbind(methods,accuracy))
 ```
 
-From this the Quadratic Discriminant Analysis (QDA) method shows the highest accuracy at nearly 90%.  From this the predicitons of the testing set are made.  These are then to be saved to files and uploaded to coursera.  From this all 20 data points were correctly predicted.
+From this the Quadratic Discriminant Analysis (QDA) method shows the highest accuracy at nearly 90%.  This would show the out of sample error to be about 10.8% from this cross validation set.
+
+From this the predicitons of the testing set are made with the QDA model.  These are then to be saved to files and uploaded to coursera.  From this all 20 data points were correctly predicted.
 
 ```{r}
 predQDA <- as.character(predict(modelQDA, newdata=test2))
