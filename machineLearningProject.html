@@ -70,8 +70,6 @@ img {
 
 <p>Data from movment tracking has become an burgeoning field in consumer products and a application of dta analysis. This proect is to show an example of such classification. Here user measurements are categorized into a type of activity.</p>
 <p>Data is taken from <a href="http://groupware.les.inf.puc-rio.br/har" class="uri">http://groupware.les.inf.puc-rio.br/har</a>. Each activity has been classified as A through E. By using a model the user movements will be used to predict what activity is being done by a new set of data.</p>
-<pre><code>## Loading required package: lattice
-## Loading required package: ggplot2</code></pre>
 <p>First the data is loaded from the source. Then, columns which would not aid in model fitting are removed. First, the row number, user names, and times are removed. Then columns of data which which had a majority of NA data was removed as information applying to a small fraction of data points would potentially bias the model. additionally, measurements that would not be taken for testing data are removed as this would cause extra error to the model.</p>
 <pre class="r"><code># load training and test sets remove user,date/time cols
 training &lt;- read.csv(&quot;pml-training.csv&quot;)

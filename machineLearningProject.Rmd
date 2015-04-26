@@ -9,7 +9,7 @@ Data from movment tracking has become an burgeoning field in consumer products a
 
 Data is taken from http://groupware.les.inf.puc-rio.br/har.  Each activity has been classified as A through E.  By using a model the user movements will be used to predict what activity is being done by a new set of data.
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 setwd("/Users/monkeyfett8/Desktop/coursera/project")
 library(caret)
 library(knitr)
