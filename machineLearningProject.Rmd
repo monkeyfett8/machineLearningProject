@@ -1,0 +1,88 @@
+---
+title: "Practical Machine Learning Project"
+author: "monkeyfett8"
+date: "April 26, 2015"
+output: html_document
+---
+
+Data from movment tracking has become an burgeoning field in consumer products and a application of dta analysis.  This proect is to show an example of such classification.  Here user measurements are categorized into a type of activity.
+
+Data is taken from http://groupware.les.inf.puc-rio.br/har.  Each activity has been classified as A through E.  By using a model the user movements will be used to predict what activity is being done by a new set of data.
+
+```{r, echo=FALSE}
+setwd("/Users/monkeyfett8/Desktop/coursera/project")
+library(caret)
+library(knitr)
+set.seed(356)
+```
+
+First the data is loaded from the source.  Then, columns which would  not aid in model fitting are removed.  First, the row number, user names, and times are removed.  Then columns of data which which had a majority of NA data was removed as information applying to a small fraction of data points would potentially bias the model. additionally, measurements that would not be taken for testing data are removed as this would cause extra error to the model.
+
+```{r}
+# load training and test sets remove user,date/time cols
+training <- read.csv("pml-training.csv")
+training <- training[,-c(1:7)]
+testing <- read.csv("pml-testing.csv")
+testing <- testing[,-c(1:7)]
+
+# determine columns of mostly NAs
+naCols <- !sapply(training,function(x) sum(is.na(x))/length(x)>.1)
+#remove columns missing from future tests
+testCols <- !is.na(colSums(testing))
+
+# remove Bad columns
+train2 <- training[,testCols&testCols]
+test2 <- testing[,testCols&testCols]
+```
+
+
+To train the models aa cross validation set is removed for validation fo the model.  This validation set is 30% of the training data set.  The training set will be used to fit the model and validation to estimate the model's ability to predict.
+
+```{r}
+# create partitions for validating within training set
+index <- createDataPartition(training$classe,p=0.7,list=FALSE)
+valSet <- train2[-index,]
+trainSet <- train2[index,]
+```
+
+The testing set contains 'r nrow(trainSet)' observations and the validation case has 'r nrow(valSet)' observations.
+
+Then, three models are fit. A tree model, then a Linear Discriminant Analysis model and finally a Quadratic Discriminant Analysis model. Within each fitting a bootstrapping cross validation method is used when trainig the model.   These will be compared to chose the best model using the validation set to estimate the accuracy of the model. This is shown in the table below.
+
+```{r, message=FALSE, warning=FALSE}
+# model <- train(classe ~ . , data=training, method="rpart2")#, trControl=fitControl)
+modelTree <- train(classe ~ . , data=trainSet, method="rpart")
+modelLDA  <- train(classe ~ . , data=trainSet, method="lda")
+modelQDA  <- train(classe ~ . , data=trainSet, method="qda")
+
+# check each model against validation set and get accuracy
+valPredTree <- as.character(predict(modelTree, newdata=valSet))
+correctTree <- sum(valPredTree ==valSet$classe)/length(valPredTree)
+
+valPredLDA <- as.character(predict(modelLDA, newdata=valSet))
+correctLDA <- sum(valPredLDA ==valSet$classe)/length(valPredLDA)
+
+valPredQDA <- as.character(predict(modelQDA, newdata=valSet))
+correctQDA <- sum(valPredQDA ==valSet$classe)/length(valPredQDA)
+
+# compare methods
+methods <- c("Tree","LDA","QDA")
+accuracy <- c(correctTree,correctLDA,correctQDA)
+print(cbind(methods,accuracy))
+```
+
+From this the Quadratic Discriminant Analysis (QDA) method shows the highest accuracy at nearly 90%.  From this the predicitons of the testing set are made.  These are then to be saved to files and uploaded to coursera.  From this all 20 data points were correctly predicted.
+
+```{r}
+predQDA <- as.character(predict(modelQDA, newdata=test2))
+
+pml_write_files = function(x){
+  n = length(x)
+  for(i in 1:n){
+    filename = paste0("problem_id_",i,".txt")
+    write.table(x[i],file=filename,quote=FALSE,row.names=FALSE,col.names=FALSE)
+  }
+}
+
+pml_write_files(predQDA)
+```
